@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-heading compact"><div><p class="eyebrow">REVIEW BEFORE YOU SAVE</p><h1>ตรวจใบเสร็จให้เรียบร้อย<span class="accent">.</span></h1><p class="subtitle">ข้อมูลที่ยืนยันแล้วเท่านั้นจะปรากฏในภาพรวมรายจ่าย</p></div><a class="button-secondary" href="{{ url_for('upload') }}">← กลับหน้าอัปโหลด</a></section>
+{% if receipt.status in ['queued','processing'] %}
+<section class="card-panel processing" id="processing" data-status-url="{{ url_for('receipt_status', receipt_id=receipt.id) }}"><div class="spinner" aria-hidden="true"></div><h2>กำลังอ่านใบเสร็จของคุณ</h2><p role="status" id="processing-status">ระบบจะอ่านภาพและแยกข้อมูลทีละใบ คุณกลับมาเปิดรายการนี้ภายหลังได้</p><p class="muted">บน Raspberry Pi อาจใช้เวลาหลายนาที</p></section>
+{% else %}
+{% if receipt.analysis_error %}<div class="notice warning" role="status"><strong>ระบบกรอกข้อมูลเบื้องต้นแล้ว แต่ต้องตรวจเพิ่มเติม</strong><br>{{ receipt.analysis_error }}</div>{% else %}<div class="notice">ระบบกรอกชื่อร้าน วันที่ สินค้า จำนวน และราคาเบื้องต้นแล้ว โปรดเทียบกับภาพและเลือกหมวดหมู่ก่อนยืนยันทุกครั้ง</div>{% endif %}
+<div class="review-grid"><aside class="card-panel receipt-view"><div class="section-title"><h2>ใบเสร็จต้นฉบับ</h2><span class="pill">{{ 'AI + OCR ในเครื่อง' if receipt.analysis_source == 'local_ai' else 'กรอกอัตโนมัติจาก OCR' if receipt.analysis_source == 'ocr_fallback' else 'ตรวจด้วยตนเอง' }}</span></div><a href="{{ url_for('receipt_image', receipt_id=receipt.id) }}" target="_blank" rel="noopener"><img class="receipt-image" src="{{ url_for('receipt_image', receipt_id=receipt.id) }}" alt="ภาพใบเสร็จต้นฉบับ"></a><details><summary>ข้อความที่ OCR อ่านได้</summary><pre class="ocr-text">{{ receipt.ocr_text or 'ยังไม่มีข้อความ OCR' }}</pre></details>{% if receipt.ocr_seconds is not none %}<p class="muted timing">OCR {{ receipt.ocr_seconds }} วินาที{% if receipt.ai_seconds is not none %} · AI {{ receipt.ai_seconds }} วินาที{% endif %}</p>{% endif %}</aside>
+<section class="card-panel"><form id="review-form" data-confirm-url="{{ url_for('confirm', receipt_id=receipt.id) }}">
+<div class="section-title"><h2>ข้อมูลค่าใช้จ่าย</h2><span class="muted">แก้ไขได้ทุกรายการ</span></div>
+<div class="form-grid"><label>ชื่อร้าน<input class="form-control" name="merchant" value="{{ draft.merchant or '' }}" maxlength="120" placeholder="ระบุชื่อร้าน" required></label><label>วันที่ซื้อ (ค.ศ.)<input class="form-control" type="date" name="date" value="{{ draft.date or '' }}" required></label></div>
+<div class="items-header"><h3>รายการสินค้า</h3><span>ยอดต่อรายการคือยอดรวมของบรรทัดนั้น</span></div>
+<div id="items-list">{% for item in draft.get('items', []) %}{% include '_item.html' %}{% endfor %}</div>
+<button type="button" class="add-item" id="add-item">＋ เพิ่มรายการสินค้า</button>
+<div class="form-grid adjustment-grid"><label>ส่วนลด / ค่าบริการ (บาท)<input class="form-control money" name="adjustment" type="number" step="0.01" value="0"><small>ส่วนลดใส่ค่าลบ เช่น -10.00</small></label><label>เหตุผลส่วนลด / ค่าบริการ<input class="form-control" name="adjustment_note" maxlength="200" placeholder="เช่น ส่วนลดสมาชิก"></label></div>
+<div class="total-box"><div><span>ผลรวมที่คำนวณได้</span><strong id="calculated-total">฿0.00</strong></div><label>ยอดรวมบนใบเสร็จ (บาท)<input class="form-control money" type="number" name="receipt_total" min="0" step="0.01" value="{{ draft.receipt_total or '' }}" required></label></div>
+<div class="notice warning" id="mismatch-notice" hidden><p id="difference-message"></p><label class="checkbox-label"><input type="checkbox" name="acknowledge_mismatch"> ฉันตรวจสอบแล้ว และยืนยันบันทึกส่วนต่างนี้แยกไว้</label></div>
+<p class="form-error" id="save-error" role="alert"></p><button type="submit" class="btn-primary-wide" id="save-button">ยืนยันและบันทึกค่าใช้จ่าย <span>✓</span></button><p class="privacy-note">ตรวจวันที่ ราคา และรายการสินค้าให้ตรงกับต้นฉบับก่อนบันทึก</p>
+</form></section></div>
+<template id="item-template">{% set item = {} %}{% include '_item.html' %}</template>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">YOUR EVERYDAY EXPENSES, MADE CLEAR</p><h1>เปลี่ยนใบเสร็จ<br>ให้เป็นภาพรวมที่เข้าใจง่าย<span class="accent">.</span></h1><p class="subtitle">อัปโหลดใบเสร็จ ให้ AI ช่วยอ่าน แล้วตรวจความถูกต้องก่อนบันทึก</p></div><div class="heading-note"><span class="note-icon" aria-hidden="true"><svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 19 19 5M5 5h14v14"/></svg></span><p>เห็นทุกการใช้จ่าย<br><strong>เริ่มจากใบเสร็จใบเดียว</strong></p></div></section>
+<div class="upload-grid">
+  <section class="card-panel upload-panel"><div class="section-title"><span class="step-number">01</span><h2>เพิ่มใบเสร็จใหม่</h2></div>
+    <form action="{{ url_for('analyze_upload') }}" method="post" enctype="multipart/form-data" id="upload-form">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf }}">
+      <label class="dropzone" id="dropzone" for="image"><span class="upload-symbol" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg></span><strong>เลือกรูปใบเสร็จของคุณ</strong><span>คลิกเพื่อเลือกไฟล์ หรือลากภาพมาวางที่นี่</span><small>JPG หรือ PNG · ไม่เกิน 10 MB / 20 ล้านพิกเซล</small><input id="image" type="file" name="image" accept="image/jpeg,image/png" required></label>
+      <div id="selected-file" class="selected-file" hidden><img id="preview" alt="ภาพใบเสร็จที่เลือก"><span id="file-name"></span><button type="button" class="text-button" id="clear-file">เปลี่ยนภาพ</button></div>
+      <p class="form-error" id="upload-error" role="alert"></p>
+      <button class="btn-primary-wide" id="analyze-button" type="submit">เริ่มอ่านใบเสร็จ <span aria-hidden="true">→</span></button>
+      <p class="privacy-note">ภาพจะถูกวิเคราะห์และเก็บไว้ในอุปกรณ์นี้</p>
+    </form>
+  </section>
+  <aside class="tips-panel"><span class="pill">ถ่ายชัด อ่านง่าย</span><h2>ภาพที่ดี<br>ช่วยให้ข้อมูลแม่นขึ้น</h2><ol class="tips-list"><li><span>01</span><div><strong>วางใบเสร็จให้เรียบ</strong><p>ถ่ายให้เห็นครบทั้งใบ โดยเฉพาะรายการและยอดรวม</p></div></li><li><span>02</span><div><strong>มีแสงพอ ไม่มีเงาบัง</strong><p>หลีกเลี่ยงภาพเอียง ภาพเบลอ และแสงสะท้อน</p></div></li><li><span>03</span><div><strong>ตรวจข้อมูลก่อนบันทึก</strong><p>AI อาจอ่านผิด คุณแก้ชื่อสินค้า ราคา และหมวดหมู่ได้</p></div></li></ol><div class="service-status" id="service-status" role="status">กำลังตรวจความพร้อม OCR และ AI…</div></aside>
+</div>
+<section class="workflow-strip" aria-label="ขั้นตอน"><span><b>1</b> อัปโหลดภาพ</span><i>→</i><span><b>2</b> อ่านและแยกข้อมูล</span><i>→</i><span><b>3</b> ตรวจแก้และยืนยัน</span><i>→</i><span><b>4</b> ดูภาพรวมรายจ่าย</span></section>
+{% if drafts %}<section class="card-panel drafts"><div class="section-title"><h2>รายการที่รอตรวจ</h2><span class="muted">ยังไม่นับเป็นรายจ่าย</span></div><div class="draft-list">{% for row in drafts %}<a href="{{ url_for('review', receipt_id=row.id) }}"><span>{{ row.created_at[:16]|replace('T',' ') }}</span><span>{{ 'กำลังวิเคราะห์' if row.status in ['queued','processing'] else 'เปิดเพื่อตรวจแก้' }} →</span></a>{% endfor %}</div></section>{% endif %}
+{% endblock %}

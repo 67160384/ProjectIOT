@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="740" viewBox="0 0 1400 740">
+<defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0 0 10 5 0 10" fill="none" stroke="#176451" stroke-width="2"/></marker><style>text{font-family:'Noto Sans Thai',sans-serif;fill:#173d36}.title{font-size:32px;font-weight:700}.h{font-size:22px;font-weight:700}.s{font-size:17px;fill:#627665}.box{fill:#fff;stroke:#c5d5bc;stroke-width:2;rx:18}.flow{stroke:#176451;stroke-width:3;fill:none;marker-end:url(#arrow)}</style></defs>
+<rect width="1400" height="740" fill="#f5f6f1"/>
+<text x="55" y="65" class="title">ใบเสร็จดี — Offline AI Receipt Analyzer</text><text x="55" y="102" class="s">ภาพการทำงานรวม · Raspberry Pi 4 / RAM 4 GB · AI ประมวลผลภายในเครื่อง</text>
+<rect x="335" y="145" width="1010" height="535" rx="24" fill="#eaf0dc" stroke="#a4ba95" stroke-width="2" stroke-dasharray="9 6"/>
+<text x="365" y="185" class="h">Raspberry Pi: Flask + Tesseract + llama.cpp + SQLite</text>
+<rect x="50" y="255" width="240" height="150" class="box"/><text x="80" y="302" class="h">มือถือ / เบราว์เซอร์</text><text x="80" y="339" class="s">ถ่ายภาพและอัปโหลด</text><text x="80" y="371" class="s">JPG / PNG ผ่าน Wi-Fi LAN</text>
+<path d="M290 330H365" class="flow"/>
+<rect x="365" y="245" width="270" height="170" class="box"/><text x="392" y="285" class="h">1. รับภาพ + OCR</text><text x="392" y="324" class="s">ตรวจไฟล์ / หมุนภาพ / Pillow</text><text x="392" y="360" class="s">Tesseract ภาษาไทย + อังกฤษ</text><text x="392" y="393" class="s">เก็บข้อความต้นฉบับเพื่อตรวจสอบ</text>
+<path d="M635 330H690" class="flow"/>
+<rect x="690" y="245" width="270" height="170" class="box"/><text x="718" y="285" class="h">2. Local AI</text><text x="718" y="324" class="s">Qwen2.5-0.5B-Instruct Q4</text><text x="718" y="360" class="s">แยกรายการ / ยอด / หมวดหมู่</text><text x="718" y="393" class="s">JSON schema · ทีละใบ</text>
+<path d="M960 330H1015" class="flow"/>
+<rect x="1015" y="245" width="300" height="170" class="box"/><text x="1040" y="285" class="h">3. ผู้ใช้ตรวจแก้</text><text x="1040" y="324" class="s">เทียบภาพกับข้อมูลและยอดรวม</text><text x="1040" y="360" class="s">แก้ไข / ยืนยันส่วนต่าง</text><text x="1040" y="393" class="s">ข้อมูลไม่ครบให้กรอกเอง</text>
+<path d="M1165 415V505H960" class="flow"/>
+<rect x="690" y="470" width="270" height="160" class="box"/><text x="718" y="512" class="h">4. SQLite</text><text x="718" y="549" class="s">บันทึกหลังยืนยันเท่านั้น</text><text x="718" y="582" class="s">เงินเป็นจำนวนเต็มสตางค์</text><text x="718" y="613" class="s">ป้องกันการบันทึกซ้ำ</text>
+<path d="M690 550H635" class="flow"/>
+<rect x="365" y="470" width="270" height="160" class="box"/><text x="392" y="512" class="h">5. Dashboard</text><text x="392" y="549" class="s">สรุปรายเดือน / หมวดหมู่</text><text x="392" y="582" class="s">ประวัติ / รายละเอียดใบเสร็จ</text><text x="392" y="613" class="s">Chart.js และไฟล์เว็บในเครื่อง</text>
+<path d="M365 550H170V405" class="flow"/>
+<text x="55" y="700" class="s">อินเทอร์เน็ตใช้ตอนติดตั้งและดาวน์โหลดโมเดล · การใช้งานจริงใช้ LAN ภายใน และไม่ส่งใบเสร็จไป AI ภายนอก</text>
+</svg>

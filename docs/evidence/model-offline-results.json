@@ -1,0 +1,35 @@
+{
+  "fixture": "synthetic_receipt.png (not a real receipt)",
+  "platform": "x86_64",
+  "pipeline_completed": true,
+  "ocr_seconds": 0.361341949999769,
+  "ai_seconds": 4.558676077999735,
+  "semantic_checks": {
+    "merchant": false,
+    "date": true,
+    "receipt_total": true,
+    "item_names": true,
+    "line_amounts": false,
+    "categories": false
+  },
+  "result": {
+    "merchant": "SYNTHETIC TEST / NOT A REAL PURCHASE",
+    "date": "2026-10-19",
+    "receipt_total": "45.50",
+    "items": [
+      {
+        "name": "ขนมปัง",
+        "quantity": null,
+        "line_total": "45.50",
+        "category": "ของใช้"
+      },
+      {
+        "name": "นม",
+        "quantity": null,
+        "line_total": "30.00",
+        "category": "ของใช้"
+      }
+    ]
+  },
+  "note": "Single synthetic fixture only. Human correction remains required. Not an accuracy benchmark."
+}

@@ -1,0 +1,49 @@
+{
+  "timestamp_utc": "2026-10-19T03:30:00.656064+00:00",
+  "fixture": "synthetic_receipt.png (generated, not a real receipt)",
+  "checks": [
+    "real Thai/English Tesseract OCR",
+    "upload → manual correction → confirm → dashboard",
+    "mobile layout at 390px",
+    "frontend loads with all external requests blocked"
+  ],
+  "health": {
+    "ai": true,
+    "database": true,
+    "full_pipeline_ready": true,
+    "ocr": {
+      "languages": [
+        "eng",
+        "tha"
+      ],
+      "ready": true
+    },
+    "web": true
+  },
+  "actual_local_ai_completed": true,
+  "draft_before_human_correction": {
+    "merchant": "SYNTHETIC TEST / NOT A REAL PURCHASE",
+    "receipt_total": "45.50",
+    "items": [
+      {
+        "name": "ขนมปัง",
+        "quantity": "",
+        "line_total": "45.50",
+        "category": "ของใช้"
+      },
+      {
+        "name": "นม",
+        "quantity": "",
+        "line_total": "30.00",
+        "category": "ของใช้"
+      }
+    ]
+  },
+  "external_browser_requests": [],
+  "javascript_errors": [],
+  "limitations": [
+    "No physical Raspberry Pi tested",
+    "No claim of model inference accuracy",
+    "Browser egress blocking is not a physical disconnected-Pi test"
+  ]
+}

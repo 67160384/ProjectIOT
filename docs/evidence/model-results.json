@@ -1,0 +1,26 @@
+{
+  "hardware": "cloud x86_64 (not Raspberry Pi)",
+  "fixture": "synthetic_receipt.png",
+  "model": "Qwen2.5-0.5B-Instruct Q4_K_M",
+  "ocr_seconds": 0.40912148999996134,
+  "ai_seconds": 4.588581073000114,
+  "result": {
+    "merchant": "SYNTHETIC TEST / NOT A REAL PURCHASE",
+    "date": "2026-10-19",
+    "receipt_total": "45.50",
+    "items": [
+      {
+        "name": "ขนมปัง",
+        "quantity": null,
+        "line_total": "45.50",
+        "category": "ของใช้"
+      },
+      {
+        "name": "นม",
+        "quantity": null,
+        "line_total": "30.00",
+        "category": "ของใช้"
+      }
+    ]
+  }
+}

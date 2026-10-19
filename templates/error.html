@@ -1,0 +1,2 @@
+{% extends 'base.html' %}
+{% block content %}<section class="card-panel error-page"><p class="eyebrow">{{ code }}</p><h1>ยังทำรายการนี้ไม่ได้</h1><p>{{ message }}</p><a class="button-secondary" href="{{ url_for('upload') }}">กลับหน้าอัปโหลด</a></section>{% endblock %}

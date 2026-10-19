@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ session.csrf }}">
+  <title>{% block title %}ใบเสร็จดี · Receipt Studio{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header"><div class="shell header-inner">
+    <a class="brand" href="{{ url_for('upload') }}"><span class="brand-icon" aria-hidden="true">▤</span><span>ใบเสร็จดี<small>RECEIPT STUDIO</small></span></a>
+    <nav aria-label="เมนูหลัก"><a class="{{ 'active' if request.endpoint == 'upload' else '' }}" href="{{ url_for('upload') }}">อัปโหลด</a><a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}">ภาพรวมรายจ่าย</a></nav>
+    <span class="local-badge"><span></span> ประมวลผลในเครื่อง</span>
+  </div></header>
+  <main class="shell">{% block content %}{% endblock %}</main>
+  <footer class="shell footer"><span>ใบเสร็จดี / Offline AI Receipt Analyzer</span><span>ข้อมูลของคุณอยู่บนอุปกรณ์นี้</span></footer>
+</body>
+</html>

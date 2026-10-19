@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+instance/
+models/*.gguf
+models/*.part
+tools/
+.env
+test-results/
+*.zip
