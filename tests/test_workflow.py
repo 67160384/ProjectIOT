@@ -51,6 +51,19 @@ def test_discount_requires_note_and_correct_math(client,csrf,receipt,payload):
     assert sum(c['amount'] for c in data['categories'])==3550
 
 
+def test_custom_category_is_saved_and_grouped(client,csrf,receipt,payload):
+    payload['items'][0]['category']='บริการล้างแอร์'
+    payload['items'][1]['category']='บริการล้างแอร์'
+    assert post(client,csrf,receipt,payload).status_code==200
+    data=client.get('/api/summary?month=2026-10').json
+    assert data['categories']==[{'category':'บริการล้างแอร์','amount':4550}]
+
+
+def test_invalid_custom_category_rejected(client,csrf,receipt,payload):
+    payload['items'][0]['category']='x'*51
+    assert post(client,csrf,receipt,payload).status_code==422
+
+
 @pytest.mark.parametrize('bad',['NaN','Infinity','-1','1.999','abc',None,'10000001'])
 def test_invalid_money_rejected(payload,bad):
     payload['items'][0]['line_total']=bad

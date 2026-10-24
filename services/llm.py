@@ -55,7 +55,8 @@ def analyze(text, base_url, timeout=180):
         "Use only visible facts, null for unknown fields. Merchant means the store name. Date must be Gregorian YYYY-MM-DD (subtract 543 from Buddhist year). "
         "line_total is the full line amount, not unit price. Exclude total, change, payment, tax and discount lines from items. "
         "Money is a string of digits with two decimal places, e.g. 12.50. Quantity is null unless explicitly printed; a price is not a quantity. "
-        "List each product once. Do not invent missing amounts. Keep original item names. Do not assign categories; the user will choose them."
+        "A customer name, address, phone number or receipt number is never an item. For table receipts, read the description, quantity, unit price and line total columns. "
+        "List each product or service once. Do not invent missing amounts. Keep original item names. Do not assign categories; the user will choose them."
     )
     try:
         with session() as client:
@@ -64,6 +65,8 @@ def analyze(text, base_url, timeout=180):
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": "ร้านตัวอย่าง\n2026-09-01\nน้ำดื่ม 10.00\nTOTAL 10.00\nCASH 20.00\nCHANGE 10.00"},
                     {"role": "assistant", "content": json.dumps({"merchant": "ร้านตัวอย่าง", "date": "2026-09-01", "receipt_total": "10.00", "items": [{"name": "น้ำดื่ม", "quantity": None, "line_total": "10.00"}]}, ensure_ascii=False)},
+                    {"role": "user", "content": "ลูกค้า: Iplay Esport เลขที่: 000000\nรายละเอียด จำนวน ราคาต่อหน่วย รวมเป็นเงิน\n1 ล้างแอร์ 2 800 1600.-\nรวมเงิน 1600.-"},
+                    {"role": "assistant", "content": json.dumps({"merchant": "Iplay Esport", "date": None, "receipt_total": "1600.00", "items": [{"name": "ล้างแอร์", "quantity": 2, "line_total": "1600.00"}]}, ensure_ascii=False)},
                     {"role": "user", "content": text}
                 ],
                 "temperature": 0, "max_tokens": 768, "stream": False,

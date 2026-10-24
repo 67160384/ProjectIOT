@@ -66,3 +66,19 @@ def test_merge_ai_fills_when_ocr_has_no_structured_items():
     )
     assert result["merchant"] == "ร้าน AI"
     assert result["items"] == [{"name": "สินค้า", "quantity": "1", "line_total": "10.00", "category": None}]
+
+
+def test_service_receipt_extracts_customer_and_table_row():
+    result = parse_ocr("""
+    ใบเสร็จรับเงิน Receipt
+    ลูกค้า: Iplay Esport เลขที่: 0000000035
+    ที่อยู่: เชียงใหม่
+    ลำดับ รายละเอียด จำนวน ราคาต่อหน่วย อื่นๆ รวมเป็นเงิน
+    1 ล้างแอร์ 2 800 - 1600.-
+    รวมเงิน 1600.-
+    """)
+    assert result["merchant"] == "Iplay Esport"
+    assert result["items"] == [
+        {"name": "ล้างแอร์", "quantity": "2", "line_total": "1600.00", "category": None}
+    ]
+    assert result["receipt_total"] == "1600.00"

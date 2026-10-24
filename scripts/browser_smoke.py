@@ -46,7 +46,7 @@ with sync_playwright() as p:
         row.locator('[data-field="name"]').fill(name)
         row.locator('[data-field="quantity"]').fill(qty)
         row.locator('[data-field="line_total"]').fill(amount)
-        row.locator('[data-field="category"]').select_option('อาหารและเครื่องดื่ม')
+        row.locator('[data-field="category"]').fill('อาหารและเครื่องดื่ม')
     page.locator('[name="receipt_total"]').fill('45.50')
     page.screenshot(path=str(out/'02-review.png'),full_page=True)
     page.set_viewport_size({'width':390,'height':844})

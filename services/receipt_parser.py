@@ -9,7 +9,7 @@ from datetime import date
 from decimal import Decimal, InvalidOperation
 
 MONEY_AT_END = re.compile(
-    r"(?P<amount>-?(?:\d{1,3}(?:,\d{3})+|\d{1,8})[.,]\d{2})\s*(?:บาท|฿)?\s*$",
+    r"(?P<amount>-?(?:\d{1,3}(?:,\d{3})+|\d{1,8})(?:[.,]\d{2}|\.?-))\s*(?:บาท|฿)?\s*$",
     re.IGNORECASE,
 )
 DATE_PATTERNS = (
@@ -31,6 +31,13 @@ MERCHANT_NOISE = (
     "receipt", "ใบเสร็จ", "tax invoice", "ใบกำกับภาษี", "thank", "ขอบคุณ",
     "date", "วันที่", "tel", "โทร", "เลขที่", "สาขา", "branch",
 )
+CUSTOMER_PATTERN = re.compile(
+    r"(?:ลูกค้า|customer)\s*[:：]?\s*(?P<name>.+?)"
+    r"(?=\s+(?:เลขที่|เลขประจำตัว|เลขผู้เสียภาษี|ที่อยู่|address|ผู้ติดต่อ|เบอร์|โทร|tel|วันที่|date|no\.?|id)\s*[:：]?|$)",
+    re.IGNORECASE,
+)
+
+
 def _clean_line(value):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", value)).strip(" |:;_")
 
@@ -39,6 +46,8 @@ def _money(value):
     if value is None:
         return None
     text = str(value).strip().replace("฿", "").replace("บาท", "").replace(" ", "")
+    if re.fullmatch(r"-?\d{1,8}(?:\.-|-)", text):
+        text = text.rstrip("-").rstrip(".") + ".00"
     if re.fullmatch(r"-?\d{1,3}(?:,\d{3})+\.\d{2}", text):
         text = text.replace(",", "")
     elif re.fullmatch(r"-?\d+[,]\d{2}", text):
@@ -75,6 +84,13 @@ def _date_from_text(text):
 
 
 def _merchant(lines, first_item_index):
+    for line in lines:
+        match = CUSTOMER_PATTERN.search(line)
+        if match:
+            name = _clean_line(match.group("name"))
+            name = re.split(r"\s+(?:เลขที่|เลขประจำตัว|เลขผู้เสียภาษี|no\.?|id)\s*[:：]?", name, maxsplit=1, flags=re.IGNORECASE)[0]
+            if 1 < len(name) <= 120 and sum(character.isalpha() for character in name) >= 2:
+                return name
     limit = first_item_index if first_item_index is not None else min(len(lines), 8)
     for line in lines[:limit]:
         if len(line) < 2 or len(line) > 120 or MONEY_AT_END.search(line):
@@ -91,6 +107,7 @@ def parse_ocr(text):
     """Return an editable draft using only visible OCR lines."""
     lines = [_clean_line(line) for line in str(text or "").splitlines()]
     lines = [line for line in lines if line]
+    customer_name = _merchant(lines, None)
     items = []
     total_candidates = []
     first_item_index = None
@@ -118,7 +135,19 @@ def parse_ocr(text):
         if quantity_match:
             quantity = quantity_match.group(1)
             prefix = _clean_line(prefix[:quantity_match.start()])
-        prefix = re.sub(r"(?:\s+\d{1,4}){1,2}\s*$", "", prefix).strip() or prefix
+        else:
+            # Table receipts commonly end a row with: description | quantity | unit price | line total.
+            table_match = re.search(
+                r"\s+(?P<quantity>\d+(?:[.,]\d{1,3})?)\s+"
+                r"(?P<unit>(?:\d{1,3}(?:,\d{3})+|\d{1,8})(?:[.,]\d{2}|\.?-)?)(?:\s+[-–—])?\s*$",
+                prefix,
+            )
+            if table_match:
+                quantity = table_match.group("quantity").replace(",", ".")
+                prefix = _clean_line(prefix[:table_match.start()])
+        prefix = re.sub(r"^\d{1,3}\s+", "", prefix).strip()
+        if customer_name and _name_key(prefix) == _name_key(customer_name):
+            continue
         if not prefix:
             continue
         if first_item_index is None:
@@ -134,7 +163,7 @@ def parse_ocr(text):
         receipt_total = f"{sum(Decimal(item['line_total']) for item in items):.2f}"
 
     return {
-        "merchant": _merchant(lines, first_item_index),
+        "merchant": customer_name or _merchant(lines, first_item_index),
         "date": _date_from_text("\n".join(lines)),
         "items": items,
         "receipt_total": receipt_total,

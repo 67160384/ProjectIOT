@@ -8,7 +8,7 @@
 <div class="review-grid"><aside class="card-panel receipt-view"><div class="section-title"><h2>ใบเสร็จต้นฉบับ</h2><span class="pill">{{ 'AI + OCR ในเครื่อง' if receipt.analysis_source == 'local_ai' else 'กรอกอัตโนมัติจาก OCR' if receipt.analysis_source == 'ocr_fallback' else 'ตรวจด้วยตนเอง' }}</span></div><a href="{{ url_for('receipt_image', receipt_id=receipt.id) }}" target="_blank" rel="noopener"><img class="receipt-image" src="{{ url_for('receipt_image', receipt_id=receipt.id) }}" alt="ภาพใบเสร็จต้นฉบับ"></a><details><summary>ข้อความที่ OCR อ่านได้</summary><pre class="ocr-text">{{ receipt.ocr_text or 'ยังไม่มีข้อความ OCR' }}</pre></details>{% if receipt.ocr_seconds is not none %}<p class="muted timing">OCR {{ receipt.ocr_seconds }} วินาที{% if receipt.ai_seconds is not none %} · AI {{ receipt.ai_seconds }} วินาที{% endif %}</p>{% endif %}</aside>
 <section class="card-panel"><form id="review-form" data-confirm-url="{{ url_for('confirm', receipt_id=receipt.id) }}">
 <div class="section-title"><h2>ข้อมูลค่าใช้จ่าย</h2><span class="muted">แก้ไขได้ทุกรายการ</span></div>
-<div class="form-grid"><label>ชื่อร้าน<input class="form-control" name="merchant" value="{{ draft.merchant or '' }}" maxlength="120" placeholder="ระบุชื่อร้าน" required></label><label>วันที่ซื้อ (ค.ศ.)<input class="form-control" type="date" name="date" value="{{ draft.date or '' }}" required></label></div>
+<div class="form-grid"><label>ชื่อร้าน / ชื่อลูกค้า<input class="form-control" name="merchant" value="{{ draft.merchant or '' }}" maxlength="120" placeholder="ระบุชื่อร้านหรือชื่อลูกค้า" required></label><label>วันที่ซื้อ (ค.ศ.)<input class="form-control" type="date" name="date" value="{{ draft.date or '' }}" required></label></div>
 <div class="items-header"><h3>รายการสินค้า</h3><span>ยอดต่อรายการคือยอดรวมของบรรทัดนั้น</span></div>
 <div id="items-list">{% for item in draft.get('items', []) %}{% include '_item.html' %}{% endfor %}</div>
 <button type="button" class="add-item" id="add-item">＋ เพิ่มรายการสินค้า</button>
@@ -18,5 +18,6 @@
 <p class="form-error" id="save-error" role="alert"></p><button type="submit" class="btn-primary-wide" id="save-button">ยืนยันและบันทึกค่าใช้จ่าย <span>✓</span></button><p class="privacy-note">ตรวจวันที่ ราคา และรายการสินค้าให้ตรงกับต้นฉบับก่อนบันทึก</p>
 </form></section></div>
 <template id="item-template">{% set item = {} %}{% include '_item.html' %}</template>
+<datalist id="category-options">{% for category in categories %}<option value="{{ category }}">{% endfor %}</datalist>
 {% endif %}
 {% endblock %}

@@ -28,7 +28,7 @@ def validate_receipt(data):
         raise ValidationError("ข้อมูลใบเสร็จไม่ถูกต้อง")
     merchant = str(data.get("merchant") or "").strip()
     if not merchant or len(merchant) > 120:
-        raise ValidationError("กรุณาระบุชื่อร้าน ไม่เกิน 120 ตัวอักษร")
+        raise ValidationError("กรุณาระบุชื่อร้านหรือชื่อลูกค้า ไม่เกิน 120 ตัวอักษร")
     purchased = data.get("date")
     try:
         if not isinstance(purchased, str) or date.fromisoformat(purchased).isoformat() != purchased:
@@ -51,9 +51,9 @@ def validate_receipt(data):
                 raise ValueError
         except (InvalidOperation, ValueError):
             raise ValidationError(f"รายการที่ {index}: จำนวนต้องมากกว่า 0 และทศนิยมไม่เกิน 3 ตำแหน่ง") from None
-        category = item.get("category")
-        if category not in CATEGORIES:
-            raise ValidationError(f"รายการที่ {index}: กรุณาเลือกหมวดหมู่")
+        category = str(item.get("category") or "").strip()
+        if not category or len(category) > 50 or any(ord(character) < 32 for character in category):
+            raise ValidationError(f"รายการที่ {index}: กรุณาเลือกหรือพิมพ์หมวดหมู่ ไม่เกิน 50 ตัวอักษร")
         items.append({"name": name, "quantity": str(quantity), "line_cents": cents(item.get("line_total"), f"รายการที่ {index}"), "category": category})
     total = cents(data.get("receipt_total"))
     adjustment = cents(data.get("adjustment", "0"), "ส่วนลด/ค่าบริการ", signed=True)
