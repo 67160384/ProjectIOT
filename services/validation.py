@@ -56,10 +56,14 @@ def validate_receipt(data):
             raise ValidationError(f"รายการที่ {index}: กรุณาเลือกหรือพิมพ์หมวดหมู่ ไม่เกิน 50 ตัวอักษร")
         items.append({"name": name, "quantity": str(quantity), "line_cents": cents(item.get("line_total"), f"รายการที่ {index}"), "category": category})
     total = cents(data.get("receipt_total"))
-    adjustment = cents(data.get("adjustment", "0"), "ส่วนลด/ค่าบริการ", signed=True)
+    if "discount" in data:
+        adjustment = -cents(data.get("discount", "0"), "ส่วนลด")
+    else:
+        # Compatibility with drafts/tests created before the dedicated discount field.
+        adjustment = cents(data.get("adjustment", "0"), "ส่วนลด/ค่าบริการ", signed=True)
     adjustment_note = str(data.get("adjustment_note") or "").strip()
     if len(adjustment_note) > 200 or (adjustment and not adjustment_note):
-        raise ValidationError("กรุณาระบุเหตุผลส่วนลดหรือค่าบริการ ไม่เกิน 200 ตัวอักษร")
+        raise ValidationError("กรุณาระบุเหตุผลส่วนลด ไม่เกิน 200 ตัวอักษร")
     expected = sum(i["line_cents"] for i in items) + adjustment
     difference = total - expected
     if difference and data.get("acknowledge_mismatch") is not True:

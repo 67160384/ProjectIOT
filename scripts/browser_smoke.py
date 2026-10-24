@@ -47,6 +47,10 @@ with sync_playwright() as p:
         row.locator('[data-field="quantity"]').fill(qty)
         row.locator('[data-field="line_total"]').fill(amount)
         row.locator('[data-field="category"]').fill('อาหารและเครื่องดื่ม')
+    page.locator('[name="discount"]').fill('6.00')
+    page.locator('[name="receipt_total"]').fill('39.50')
+    assert '39.50' in page.locator('#calculated-total').inner_text(), 'Positive discount must be subtracted'
+    page.locator('[name="discount"]').fill('0')
     page.locator('[name="receipt_total"]').fill('45.50')
     page.screenshot(path=str(out/'02-review.png'),full_page=True)
     page.set_viewport_size({'width':390,'height':844})

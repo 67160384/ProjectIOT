@@ -51,6 +51,22 @@ def test_discount_requires_note_and_correct_math(client,csrf,receipt,payload):
     assert sum(c['amount'] for c in data['categories'])==3550
 
 
+def test_positive_discount_field_is_subtracted(client,csrf,receipt,payload):
+    payload.pop('adjustment')
+    payload.update(receipt_total='39.50',discount='6.00',adjustment_note='ส่วนลดสมาชิก')
+    assert post(client,csrf,receipt,payload).status_code==200
+    data=client.get('/api/summary?month=2026-10').json
+    assert data['total_cents']==3950
+    assert sum(c['amount'] for c in data['categories'])==3950
+    assert data['categories'][-1]=={'category':'ส่วนลด / ค่าบริการ','amount':-600}
+
+
+def test_negative_discount_field_rejected(client,csrf,receipt,payload):
+    payload.pop('adjustment')
+    payload.update(receipt_total='45.50',discount='-6.00',adjustment_note='ส่วนลด')
+    assert post(client,csrf,receipt,payload).status_code==422
+
+
 def test_custom_category_is_saved_and_grouped(client,csrf,receipt,payload):
     payload['items'][0]['category']='บริการล้างแอร์'
     payload['items'][1]['category']='บริการล้างแอร์'

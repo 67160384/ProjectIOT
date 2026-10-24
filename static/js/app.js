@@ -53,7 +53,7 @@ if (reviewForm) {
   const value = name => reviewForm.elements.namedItem(name).value;
   let lastDifference = null;
   function totals() {
-    const sum = [...list.querySelectorAll('[data-field="line_total"]')].reduce((acc,el)=>acc+toCents(el.value),0) + toCents(value('adjustment'));
+    const sum = [...list.querySelectorAll('[data-field="line_total"]')].reduce((acc,el)=>acc+toCents(el.value),0) - toCents(value('discount'));
     const diff = toCents(value('receipt_total')) - sum;
     document.querySelector('#calculated-total').textContent = money(sum);
     document.querySelector('#mismatch-notice').hidden = diff === 0;
@@ -75,7 +75,7 @@ if (reviewForm) {
   reviewForm.addEventListener('submit',async event => {
     event.preventDefault(); error.textContent = '';
     if (!list.children.length) {error.textContent = 'กรุณาเพิ่มสินค้าอย่างน้อย 1 รายการ'; return;}
-    const data = {merchant:value('merchant'),date:value('date'),receipt_total:value('receipt_total'),adjustment:value('adjustment'),adjustment_note:value('adjustment_note'),acknowledge_mismatch:reviewForm.elements.namedItem('acknowledge_mismatch').checked,
+    const data = {merchant:value('merchant'),date:value('date'),receipt_total:value('receipt_total'),discount:value('discount'),adjustment_note:value('adjustment_note'),acknowledge_mismatch:reviewForm.elements.namedItem('acknowledge_mismatch').checked,
       items:[...list.querySelectorAll('.item-row')].map(row=>Object.fromEntries([...row.querySelectorAll('[data-field]')].map(el=>[el.dataset.field,el.value])))};
     const button = document.querySelector('#save-button'); button.disabled = true;
     try {
