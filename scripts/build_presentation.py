@@ -302,7 +302,7 @@ def slide_llm(prs):
     bullet_list(slide, [
         "LLM รับ “ข้อความจาก OCR” ไม่ได้รับรูปภาพโดยตรง",
         "รันผ่าน llama.cpp ภายใน Raspberry Pi",
-        "ใช้โมเดลแบบ quantized เพื่อให้เหมาะกับ RAM 4 GB",
+        "ใช้โมเดลแบบ quantized เพื่อลดภาระ CPU และหน่วยความจำ",
     ], 3.25, 4.25, 8.75, 1.35, size=13.5, color=WHITE, accent=LIME)
     footer(slide)
 

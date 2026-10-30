@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="740" viewBox="0 0 1400 740">
 <defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0 0 10 5 0 10" fill="none" stroke="#176451" stroke-width="2"/></marker><style>text{font-family:'Noto Sans Thai',sans-serif;fill:#173d36}.title{font-size:32px;font-weight:700}.h{font-size:22px;font-weight:700}.s{font-size:17px;fill:#627665}.box{fill:#fff;stroke:#c5d5bc;stroke-width:2;rx:18}.flow{stroke:#176451;stroke-width:3;fill:none;marker-end:url(#arrow)}</style></defs>
 <rect width="1400" height="740" fill="#f5f6f1"/>
-<text x="55" y="65" class="title">ใบเสร็จดี — Offline AI Receipt Analyzer</text><text x="55" y="102" class="s">ภาพการทำงานรวม · Raspberry Pi 4 / RAM 4 GB · AI ประมวลผลภายในเครื่อง</text>
+<text x="55" y="65" class="title">ใบเสร็จดี — Offline AI Receipt Analyzer</text><text x="55" y="102" class="s">ภาพการทำงานรวม · Raspberry Pi 4 / RAM 8 GB · AI ประมวลผลภายในเครื่อง</text>
 <rect x="335" y="145" width="1010" height="535" rx="24" fill="#eaf0dc" stroke="#a4ba95" stroke-width="2" stroke-dasharray="9 6"/>
 <text x="365" y="185" class="h">Raspberry Pi: Flask + Tesseract + llama.cpp + SQLite</text>
 <rect x="50" y="255" width="240" height="150" class="box"/><text x="80" y="302" class="h">มือถือ / เบราว์เซอร์</text><text x="80" y="339" class="s">ถ่ายภาพและอัปโหลด</text><text x="80" y="371" class="s">JPG / PNG ผ่าน Wi-Fi LAN</text>
